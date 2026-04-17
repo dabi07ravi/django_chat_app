@@ -29,7 +29,7 @@ class LoginView(APIView):
             )
 
             refresh = RefreshToken()
-            refresh["user_id"] = str(user["_id"])
+            refresh["mongo_id"] = str(user["_id"])
 
             return Response({
                 "access": str(refresh.access_token),
