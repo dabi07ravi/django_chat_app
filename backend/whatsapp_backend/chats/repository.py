@@ -1,5 +1,7 @@
 from core.db import db
 from datetime import datetime
+from bson import ObjectId
+
 
 chats_collection = db["chats"]
 
@@ -23,3 +25,7 @@ class ChatRepository:
         return chats_collection.find({
             "participants": sender_id
         }).sort("updated_at", -1)
+    
+    @staticmethod
+    def get_chat_by_id(chat_id):
+        return db["chats"].find_one({"_id": ObjectId(chat_id)})
