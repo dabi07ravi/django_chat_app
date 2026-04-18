@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'accounts',
     'chats',
     'chat_messages',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -94,6 +95,17 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+ASGI_APPLICATION = "whatsapp_backend.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
 }
 
 
