@@ -18,3 +18,7 @@ class UserRepository:
     @staticmethod
     def find_by_id(user_id):
         return users_collection.find_one({"_id": ObjectId(user_id)})
+    
+    @staticmethod
+    def update_user_last_seen(user_id):
+        return users_collection.update_one({"_id": ObjectId(user_id)},{"$set": {"last_seen": datetime.utcnow()}})
