@@ -22,3 +22,10 @@ class UserRepository:
     @staticmethod
     def update_user_last_seen(user_id):
         return users_collection.update_one({"_id": ObjectId(user_id)},{"$set": {"last_seen": datetime.utcnow()}})
+    
+    staticmethod
+    def update_profile_pic(user_id, url):
+        return users_collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"profile_pic": url}}
+        )

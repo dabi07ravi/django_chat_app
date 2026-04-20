@@ -8,3 +8,6 @@ class RegisterSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     phone = serializers.CharField()
     password = serializers.CharField(write_only=True)
+
+class ProfilePicSerializer(serializers.Serializer):
+    profile_pic = serializers.ImageField()

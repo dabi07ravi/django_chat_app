@@ -1,6 +1,8 @@
 from .repository import UserRepository
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework.exceptions import AuthenticationFailed
+from core.file_service import save_file
+
 
 class UserService:
 
@@ -24,3 +26,12 @@ class UserService:
             raise AuthenticationFailed("Invalid password")
 
         return user
+    
+    @staticmethod
+    def upload_profile_pic(user_id, file):
+
+        url = save_file(file)
+
+        UserRepository.update_profile_pic(user_id, url)
+
+        return {"profile_pic": url}
