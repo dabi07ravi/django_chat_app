@@ -17,6 +17,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.chat_id = self.scope['url_route']['kwargs']['chat_id']
         self.user_id = self.scope.get("user_id")
 
+
+        await self.accept()  
+
+
+        print("sdfghgfdghg",  self.user_id)
+
         if not self.user_id:
             await self.send(json.dumps({"error": "Unauthorized"}))
             await self.close()
@@ -30,11 +36,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
 
         if str(self.user_id) not in [str(p) for p in chat["participants"]]:
+            print("accessss_denied")
             await self.send(json.dumps({"error": "Access denied"}))
+            print("accesss_accepted")
             await self.close()
             return
         
-        await self.accept()   # ✅ MUST DO FIRST
         redis_client.setex(f"user_online_{self.user_id}", 60, "1")
 
         self.room_group_name = f"chat_{self.chat_id}"
