@@ -1,5 +1,12 @@
 from .repository import ChatRepository
 from datetime import datetime
+from core.exceptions import (
+    ChatNotFound,
+    NotGroupChat,
+    NotGroupAdmin,
+    CannotRemoveAdmin,
+    UserNotInChat,
+)
 
 
 class ChatService:
@@ -62,14 +69,14 @@ class ChatService:
         chat = ChatRepository.get_chat_by_id(chat_id)
 
         if not chat:
-            raise Exception("Chat not found")
+            raise ChatNotFound()
 
         if chat["type"] != "group":
-            raise Exception("Not a group chat")
+            raise NotGroupChat()
 
         # ✅ Only admin can add
         if admin_id not in chat.get("admin_ids", []):
-            raise Exception("Only admin can add members")
+            raise NotGroupAdmin()
         ChatRepository.add_member(chat_id, new_user_id)
 
         return {"message": "User added successfully"}
@@ -80,26 +87,26 @@ class ChatService:
         chat = ChatRepository.get_chat_by_id(chat_id)
 
         if not chat:
-            raise Exception("Chat not found")
+            raise ChatNotFound()
+
 
         if chat["type"] != "group":
-            raise Exception("Not a group chat")
+            raise NotGroupChat()
 
         # ✅ Only admin can remove
         if admin_id not in chat.get("admin_ids", []):
-            raise Exception("Only admin can remove members")
+            raise NotGroupAdmin()
 
         # ❗ Optional: prevent removing admin itself
         if remove_user_id in chat.get("admin_ids", []):
-            raise Exception("Cannot remove admin")
+            raise CannotRemoveAdmin()
 
         removed = ChatRepository.remove_member(chat_id, remove_user_id)
 
-
         if removed.matched_count == 0:
-            return {"error": "Chat not found"}
+            raise ChatNotFound()
 
         if removed.modified_count == 0:
-            return {"error": "User not in chat"}
+            raise UserNotInChat()
 
         return {"message": "User removed successfully"}

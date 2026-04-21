@@ -1,0 +1,23 @@
+[2026-04-21 06:32:22,144] ERROR core.exception_handler 
+        ERROR ID: fc888c5e-aa3c-4afe-87b0-606da585a536
+        VIEW: LoginView
+        METHOD: POST
+        PATH: /api/auth/login/
+        ERROR: type object 'UserRepository' has no attribute 'find_by_phoneee'
+        
+Traceback (most recent call last):
+  File "/Users/ravindrasinghdabi/Desktop/chat_app/backend/.venv/lib/python3.14/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/ravindrasinghdabi/Desktop/chat_app/backend/whatsapp_backend/accounts/views.py", line 30, in post
+    user = UserService.login_user(
+        serializer.validated_data["phone"],
+        serializer.validated_data["password"],
+    )
+  File "/Users/ravindrasinghdabi/Desktop/chat_app/backend/whatsapp_backend/accounts/services.py", line 25, in login_user
+    user = UserRepository.find_by_phoneee(phone)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'UserRepository' has no attribute 'find_by_phoneee'. Did you mean: 'find_by_phone'?
+[2026-04-21 06:32:22,147] ERROR django.request Internal Server Error: /api/auth/login/
+[2026-04-21 06:32:22,147] ERROR django.request Internal Server Error: /api/auth/login/
+[2026-04-21 06:32:22,148] ERROR django.server "POST /api/auth/login/ HTTP/1.1" 500 123
+[2026-04-21 06:32:22,148] ERROR django.server "POST /api/auth/login/ HTTP/1.1" 500 123
