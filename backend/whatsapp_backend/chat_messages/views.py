@@ -19,7 +19,7 @@ class SendMessageView(APIView):
             message = MessageService.send_message(
                 serializer.validated_data["chat_id"],
                 sender_id,
-                serializer.validated_data["content"]
+                serializer.validated_data["content"],
             )
 
             return Response(message, status=201)
@@ -31,7 +31,9 @@ class ChatMessagesView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, chat_id):
+        page = max(1, int(request.GET.get("page", 1)))
+        limit = min(20, int(request.GET.get("limit", 20)))
         user = get_user_from_token(request)
         sender_id = user._id
-        messages = MessageService.get_messages(chat_id, sender_id)
-        return Response(messages)
+        result = MessageService.get_messages(chat_id, sender_id, page, limit)
+        return Response({"success": True, **result})

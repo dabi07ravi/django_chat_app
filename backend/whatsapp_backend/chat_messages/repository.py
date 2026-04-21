@@ -4,6 +4,7 @@ from datetime import datetime
 messages_collection = db["messages"]
 chats_collection = db["chats"]
 
+
 class MessageRepository:
 
     @staticmethod
@@ -12,20 +13,22 @@ class MessageRepository:
         return messages_collection.insert_one(data)
 
     @staticmethod
-    def get_chat_messages(chat_id, sender_id):
-        return messages_collection.find({
-            "chat_id": chat_id,
-            "sender_id" : sender_id
-        }).sort("created_at", 1)
+    def get_chat_messages(chat_id, sender_id, page, limit):
+        skip = (page - 1) * limit
+        total = messages_collection.count_documents({"chat_id": chat_id})
+
+        messages = (
+            messages_collection.find({"chat_id": chat_id, "sender_id": sender_id})
+            .sort("created_at", -1)
+            .skip(skip)
+            .limit(limit)
+        )
+
+        return list(messages), total
 
     @staticmethod
     def update_last_message(chat_id, message, sender_id):
         chats_collection.update_one(
-            {"_id": chat_id, "sender_id" : sender_id},
-            {
-                "$set": {
-                    "last_message": message,
-                    "updated_at": datetime.utcnow()
-                }
-            }
+            {"_id": chat_id, "sender_id": sender_id},
+            {"$set": {"last_message": message, "updated_at": datetime.utcnow()}},
         )
